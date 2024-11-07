@@ -8,6 +8,7 @@ namespace containers {
 
 namespace internal {
 
+// handles raw memory
 template <typename T>
 class VectorBuf {
  protected:
@@ -23,6 +24,7 @@ class VectorBuf {
         data_(sz ? static_cast<T*>(::operator new(sz * sizeof(*data_)))
                  : nullptr) {}
 
+  // copying may throw, so it is not the responsibility of VectorBuf
   VectorBuf(const VectorBuf& other) = delete;
   VectorBuf& operator=(const VectorBuf& other) = delete;
 
@@ -33,7 +35,7 @@ class VectorBuf {
     other.cap_ = 0;
   }
 
-  VectorBuf& operator=(VectorBuf&& other) {
+  VectorBuf& operator=(VectorBuf&& other) noexcept {
     std::swap(data_, other.data_);
     std::swap(sz_, other.sz_);
     std::swap(cap_, other.cap_);
